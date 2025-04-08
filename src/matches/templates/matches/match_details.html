@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% load static %}
+{% load channel_tags %}
+
+{% block content %}
+    {% if error %}
+        <div class="max-w-5xl mx-auto p-4">
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                <p>{{ error }}</p>
+            </div>
+        </div>
+    {% else %}
+        <!-- Match Header -->
+        <div class="max-w-5xl mx-auto rounded-xl shadow-sm p-2 mb-6">
+            <div class="relative rounded-xl overflow-hidden">
+                <!-- Background with Gradient -->
+                <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-400 to-black"></div>
+
+                <!-- Content -->
+                <div class="relative z-10">
+                    <!-- League and Date Header -->
+                    <div class="p-4 border-b border-gray-700">
+                        <div class="flex justify-between items-center">
+                            <div class="text-sm text-white">{{ match.league.arabic_name }} - ذهاب دور {{ match.round }}</div>
+                            <div class="text-sm text-white">{{ match.fixture.date|date:"H:i" }} {{ match.fixture.date|date:"d F Y" }}</div>
+                        </div>
+                    </div>
+
+                     <!-- Channel Info -->
+                     <div class="mt-6 flex justify-center items-center gap-2">
+                        
+                        <span class="text-white">بث ان سبورت {{ match.channel }}</span>
+                        <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <rect x="3" y="6" width="18" height="12" rx="2" stroke-width="1.5"/>
+                            <path d="M7 18v2" stroke-width="1.5"/>
+                            <path d="M17 18v2" stroke-width="1.5"/>
+                            <path d="M8 20h8" stroke-width="1.5"/>
+                        </svg>
+                    </div>
+
+                    <!-- Teams Section -->
+                    <div class="p-8">
+                        <div class="flex items-center justify-between">
+                            <!-- Home Team -->
+                            <div class="flex flex-col items-center flex-1">
+                                <img src="{{ match.teams.home.logo }}" alt="{{ match.teams.home.name }}" 
+                                     class="w-24 h-24 object-contain mb-4 bg-white/10 rounded-full p-2">
+                                <h2 class="text-white text-2xl font-bold text-center">{{ match.teams.home.name }}</h2>
+                            </div>
+
+                            <!-- Match Status and Score -->
+                            <div class="text-center flex-1 flex flex-col items-center justify-center mx-4">
+                                {% with status=match.fixture.status.short %}
+                                    {% if status == 'NS' %}
+                                        <div class="text-3xl font-bold text-white mb-2">
+                                            {{ match.fixture.date|date:"H:i" }}
+                                        </div>
+                                        <div class="match-status bg-gray-800 text-white px-4 py-1 rounded-full text-sm" 
+                                             data-match-status="{{ status }}">
+                                            لم تبدأ بعد
+                                        </div>
+                                    {% elif status == '1H' or status == '2H' or status == 'HT' or status == 'ET' or status == 'P' or status == 'BT' %}
+                                        <div class="text-3xl font-bold text-white mb-2">
+                                            {{ match.goals.home|default:"0" }} - {{ match.goals.away|default:"0" }}
+                                        </div>
+                                        <div class="flex flex-col items-center gap-2">
+                                            <div class="match-status-live bg-red-600 text-white px-4 py-1 rounded-full text-sm flex items-center gap-2"
+                                                 data-match-status="{{ status }}">
+                                                <span class="relative flex h-2 w-2">
+                                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                                                </span>
+                                                جارية الآن
+                                            </div>
+                                            {% if match.fixture.status.elapsed %}
+                                                <div class="text-red-500 text-sm font-bold">
+                                                    {{ match.fixture.status.elapsed }}'
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    {% elif status == 'FT' or status == 'AET' or status == 'PEN' %}
+                                        <div class="text-3xl font-bold text-white mb-2">
+                                            {{ match.goals.home|default:"0" }} - {{ match.goals.away|default:"0" }}
+                                        </div>
+                                        <div class="match-status bg-gray-800 text-white px-4 py-1 rounded-full text-sm" 
+                                             data-match-status="{{ status }}">
+                                            انتهت
+                                        </div>
+                                    {% endif %}
+                                {% endwith %}
+                            </div>
+
+                            <!-- Away Team -->
+                            <div class="flex flex-col items-center flex-1">
+                                <img src="{{ match.teams.away.logo }}" alt="{{ match.teams.away.name }}" 
+                                     class="w-24 h-24 object-contain mb-4 bg-white/10 rounded-full p-2">
+                                <h2 class="text-white text-2xl font-bold text-center">{{ match.teams.away.name }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Stream Section -->
+        <div class="max-w-5xl mx-auto rounded-xl shadow-sm p-2 mb-6">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="bg-gray-50 p-4">
+                    <h2 class="text-xl font-bold text-right">{{ match.channel }} شاهد بث مباشر مباراة {{ match.teams.home.name }} و{{ match.teams.away.name }} بتاريخ {{ match.fixture.date|date:"d-m-Y" }} في دوري {{ match.league.arabic_name }}</h2>
+                </div>
+
+                {% with channel_url=match.channel|get_channel_url %}
+                    {% if channel_url %}
+                        <iframe allowfullscreen="true" frameborder="0" height="600px" scrolling="1" src="{{ channel_url }}" width="100%"></iframe>
+                    {% else %}
+                        <div class="p-4 text-center">
+                            <p>لا يوجد بث مباشر متاح لهذه القناة: {{ match.channel }}</p>
+                        </div>
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+            <!-- Match Details Section -->
+            <div class="max-w-5xl mx-auto mt-6">
+                <div class="mx-auto">
+                    <h2 class="bg-gray-100 text-lg font-bold p-1 rounded">📅 {{ match.fixture.date|date:"Y-m-d" }} - شاهد بث مباشر مباراة {{ match.teams.home.name }} و{{ match.teams.away.name }} </h2>
+                    
+                    <p class="mt-4 text-gray-50">
+                        من المقرر أن يواجه اليوم {{ match.teams.away.name }} فريق {{ match.teams.home.name }} ضمن بطولة {{ match.league.name }}، في تمام الساعة {{ match.time }} بتوقيت {{ match.timezone }}.
+                    </p>
+                    
+                    <div class="bg-gray-200/50 p-4 rounded-lg shadow-xl mt-6">
+                        <h3 class="text-xl font-bold mb-2">📝 معلومات عن المباراة</h3>
+                        <table class="w-full text-right">
+                            <tr class="border-b border-gray-700">
+                                <td class="py-2">🏆 البطولة  :</td>
+                                <td class="py-2">{{ match.league.name }}</td>
+                            </tr>
+                            <tr class="border-b border-gray-700">
+                                <td class="py-2">📅 التاريخ  :</td>
+                                <td class="py-2">{{ match.date }}</td>
+                            </tr>
+                            <tr class="border-b border-gray-700">
+                                <td class="py-2">⏰ التوقيت  :</td>
+                                <td class="py-2">{{ match.time }}</td>
+                            </tr>
+                            <tr class="border-b border-gray-700">
+                                <td class="py-2">📺 القناة الناقلة  :</td>
+                                <td class="py-2">{{ match.channel }}</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2">🎙 المعلق  :</td>
+                                <td class="py-2">{{ match.commentator }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        
+    {% endif %}
+{% endblock %}

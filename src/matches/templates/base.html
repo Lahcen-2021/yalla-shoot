@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مباريات كرة القدم المباشرة</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="bg-gray-100 min-h-full flex flex-col">
+    <!-- شريط التنقل -->
+    <nav class=" bg-white shadow-lg">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex items-center h-16">
+                <!-- القسم الأيمن - الشعار مع روابط التنقل -->
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center ml-8">
+                        <img src="{% static 'images/yalla-kora-net.png' %}" alt="يلا كورة نت" class="h-16 w-auto">
+                    </a>
+                    <!-- روابط التنقل -->
+                    <div class="hidden md:flex items-center space-x-8 space-x-reverse">
+                        <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">المباريات المباشرة</a>
+                        <a href="#" class="nav-link">جدول المباريات</a>
+                        <a href="#" class="nav-link">البطولات</a>
+                    </div>
+                </div>
+
+                <!-- زر القائمة للموبايل -->
+                <div class="md:hidden mr-auto">
+                    <button type="button" class="mobile-menu-button p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- قائمة الموبايل -->
+        <div class="mobile-menu hidden md:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="/" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100">المباريات المباشرة</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100">جدول المباريات</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100">البطولات</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- الصفحة الرئيسية -->
+
+    <!-- Main content -->
+    <main class="flex-grow">
+        {% block content %}
+            {% include "matches.html" %}
+            {% include "bein3.html" %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white mt-auto">
+        <div class="max-w-6xl mx-auto px-2 py-2">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <img src="{% static 'images/yalla-kora-net.png' %}" alt="يلا كورة نت" class="h-12 w-auto">
+                    <p class="text-gray-600">جميع الحقوق محفوظة &copy; 2025</p>
+                </div>
+                <div class="flex items-center px-4 py-2 space-x-6">
+                    <a href="#" class="text-gray-600 hover:text-gray-900">سياسة الخصوصية</a>
+                    <a href="#" class="text-gray-600 hover:text-gray-900">الشروط والأحكام</a>   
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

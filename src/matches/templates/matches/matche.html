@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}مباريات كرة القدم المباشرة{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/matches.css' %}">
+{% endblock %}
+{% block content %}
+
+      <!-- محتوى المباريات -->
+    <div class="container mx-auto px-4 py-4">
+        <!-- القائمة العلوية -->
+        {% comment %} <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center gap-6">
+                <a href="#" class="text-gray-600 hover:text-gray-900">الدوريات والبطولات</a>
+                <a href="#" class="text-gray-600 hover:text-gray-900">ملخص المباريات</a>
+                <a href="#" class="text-gray-600 hover:text-gray-900">اخبار الرياضة</a>
+                <a href="#" class="text-gray-600 hover:text-gray-900">قنوات البث</a>
+            </div>
+            <div class="flex items-center gap-2">
+                <img src="{% static 'images/logo.png' %}" alt="كورة لايف" class="h-8">
+                <span class="text-green-500 font-bold">كورة لايف</span>
+            </div>
+        </div> {% endcomment %}
+
+        <!-- عنوان وفلتر المباريات -->
+        <div class="max-w-5xl mx-auto px-4">
+            <!-- العنوان وأزرار التصفية -->
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+                <h2 class="text-xl font-bold text-gray-800">جدول المباريات</h2>
+                <!-- أزرار التصفية -->
+                <div class="flex flex-wrap justify-center gap-2">
+                    <a href="?date=yesterday" 
+                       class="filter-date-btn {% if current_date == 'yesterday' %}active{% endif %}">
+                        مباريات الأمس
+                    </a>
+                    <a href="?date=today" 
+                       class="filter-date-btn {% if current_date == 'today' %}active{% endif %}">
+                        مباريات اليوم
+                    </a>
+                    <a href="?date=tomorrow" 
+                       class="filter-date-btn {% if current_date == 'tomorrow' %}active{% endif %}">
+                        مباريات الغد
+                    </a>
+                </div>
+            </div>
+
+           
+        </div>
+
+        <!-- محتوى المباريات الحالي -->
+        <div class="max-w-5xl mx-auto rounded-xl shadow-sm p-2 mb-6 space-y-4">
+            {% if matches %}
+                {% for match in matches %}
+                    <!-- بطاقة المباراة -->
+                    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                        <!-- معلومات الدوري والقناة -->
+                        <div class="bg-gray-50 px-4 py-2 flex justify-between items-center text-sm border-b">
+                            <div class="text-gray-600">
+                                {{ match.league.arabic_name }}
+                            </div>
+                            <!-- الجولة -->
+                            <div class="flex items-center gap-2">
+                                {% if match.round %}
+                                    الجولة {{ match.round }}
+                                {% endif %}
+                            </div>
+                            <!-- القناة -->
+                            <div class="text-gray-600 flex items-center gap-2">
+                                {% if match.fixture.status.short == 'NS' %}
+                                    <span>{{ match.fixture.date|date:"h:i A" }}</span>
+                                {% endif %}
+                                <span>{{ match.channel|default:"beIN SPORTS HD" }}</span>
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <rect x="3" y="6" width="18" height="12" rx="2" stroke-width="1.5"/>
+                                    <path d="M7 18v2" stroke-width="1.5"/>
+                                    <path d="M17 18v2" stroke-width="1.5"/>
+                                    <path d="M8 20h8" stroke-width="1.5"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- تفاصيل المباراة -->
+                        <div class="p-4 relative group">
+                            <!-- زر التشغيل -->
+                            <!-- Replace the existing link -->
+                            <div class="absolute inset-0 z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black bg-opacity-30 rounded-lg cursor-pointer">
+                                <a href="{% url 'match_details' match.fixture.id %}" class="text-white text-lg font-bold">
+                                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg">
+                                        <svg class="w-6 h-6 text-gray-800" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                                        </svg>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <!-- الفريق المضيف -->
+                                <div class="flex flex-col items-center flex-1">
+                                    <img src="{{ match.teams.home.logo }}" alt="{{ match.teams.home.name }}" class="w-14 h-14 object-contain">
+                                    <h5 class="text-gray-800 font-medium text-center mt-2 text-sm">{{ match.teams.home.name }}</h5>
+                                </div>
+                                
+                                <!-- النتيجة والحالة -->
+                                
+                                <div class="text-center flex-1 flex flex-col items-center justify-center">
+                                    {% with status=match.fixture.status.short %}
+                                        {% if status == 'NS' %}
+                                            <!-- Add data-match-status attribute -->
+                                            {% if match != upcoming_matches %} 
+                                                
+                                                 <div class="text-2xl font-bold text-gray-800" >
+                                                    {{ match.formatted_time }}
+                                                </div>
+                                                
+                                                 <!-- Add data-match-status attribute -->
+                                                <div class="match-status bg-black text-white px-4 py-1 rounded-full text-xs mt-2" 
+                                                        data-match-status="{{ status }}">
+                                                        لم تبدأ بعد
+                                                </div>
+                                                   
+                                            {% else %}
+                                                <div class="text-2xl font-bold text-gray-800 mb-2">
+                                                    {{ match.goals.home|default:"0" }} - {{ match.goals.away|default:"0" }}
+                                                </div> 
+                                         {% endif %} 
+                                        {% elif status == '1H' or status == '2H' or status == 'HT' or status == 'ET' or status == 'P' or status == 'BT' %}
+                                            <div class="text-2xl font-bold text-gray-800 mb-2">
+                                                {{ match.goals.home|default:"0" }} - {{ match.goals.away|default:"0" }}
+                                            </div>
+                                            <div class="flex flex-col items-center gap-2">
+                                                <!-- Add data-match-status attribute -->
+                                                <div class="match-status-live bg-red-600 text-white px-4 py-1 rounded-full text-xs flex items-center gap-2"
+                                                     data-match-status="{{ status }}">
+                                                    <span class="relative flex h-1.5 w-1.5">
+                                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                                                        <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-white"></span>
+                                                    </span>
+                                                    جارية الآن
+                                                </div>
+                                                <div class="match-time-flash text-red-600 text-sm font-bold">
+                                                    {% if match.fixture.status.elapsed %}
+                                                        <span>{{ match.fixture.status.elapsed }}'</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        {% elif status == 'FT' or status == 'AET' or status == 'PEN' %}
+                                            <div class="text-2xl font-bold text-gray-800 mb-2">
+                                                {{ match.goals.home|default:"0" }} - {{ match.goals.away|default:"0" }}
+                                            </div>
+                                            <!-- Add data-match-status attribute -->
+                                            <div class="match-status bg-black text-white px-4 py-1 rounded-full text-xs" 
+                                                 data-match-status="{{ status }}">
+                                                انتهت
+                                            </div>
+                                        {% endif %}
+                                    {% endwith %}
+                                </div> 
+
+                                <!-- الفريق الضيف -->
+                                <div class="flex flex-col items-center flex-1">
+                                    <img src="{{ match.teams.away.logo }}" alt="{{ match.teams.away.arabic_name}}" class="w-14 h-14 object-contain">
+                                    <h5 class="text-gray-800 font-medium text-center mt-2 text-sm">{{ match.teams.away.name }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="bg-white rounded-lg shadow-md p-8 text-center">
+                    <p class="text-gray-600 text-lg">لا توجد مباريات متاحة في هذه الحالة</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- إضافة قبل نهاية الـ body -->
+
+    <script>
+        const matchStatusTranslations = {
+            'NS': { text: 'لم تبدأ بعد', class: 'bg-gray-400 text-white' },
+            '1H': { text: 'الشوط الأول', class: 'bg-green-100 text-green-800' },
+            '2H': { text: 'الشوط الثاني', class: 'bg-green-100 text-green-800' },
+            'HT': { text: 'استراحة', class: 'bg-yellow-100 text-yellow-800' },
+            'ET': { text: 'وقت إضافي', class: 'bg-orange-100 text-orange-800' },
+            'P': { text: 'ركلات الترجيح', class: 'bg-red-100 text-red-800' },
+            'BT': { text: 'قبل الوقت الإضافي', class: 'bg-yellow-100 text-yellow-800' },
+            'FT': { text: 'انتهت المباراة', class: 'bg-gray-400 text-white' },
+            'AET': { text: 'انتهت بعد الوقت الإضافي', class: 'bg-gray-400 text-white' },
+            'PEN': { text: 'انتهت بركلات الترجيح', class: 'bg-gray-400 text-white' }
+        };
+    
+        function updateMatchStatus() {
+            document.querySelectorAll('.match-status, .match-status-live').forEach(element => {
+                const statusCode = element.dataset.matchStatus;
+                const translation = matchStatusTranslations[statusCode] || { 
+                    text: 'حالة غير معروفة', 
+                    class: 'bg-gray-100 text-gray-800' 
+                };
+                
+                // Update text content
+                element.textContent = translation.text;
+                
+                // Update classes (preserve existing utility classes)
+                element.className = `px-4 py-1 rounded-full text-xs mt-2 ${translation.class}`;
+                
+                // Add live indicator for ongoing matches
+                if (['1H', '2H', 'HT', 'ET', 'P', 'BT'].includes(statusCode)) {
+                    element.innerHTML = `
+                        <span class="relative flex h-1.5 w-1.5">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-white"></span>
+                        </span>
+                        ${translation.text}
+                    `;
+                    element.classList.add('flex', 'items-center', 'gap-2', 'bg-red-600', 'text-white');
+                }
+            });
+        }
+    
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', updateMatchStatus);
+        
+        // Update every minute for live matches
+        setInterval(updateMatchStatus, 60000);
+    </script>
+
+
+
+{% endblock content %}

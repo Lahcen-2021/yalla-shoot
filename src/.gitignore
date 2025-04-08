@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+.env
+venv/
+
+# Django
+staticfiles/
+media/
+*.log
+
+# IDE
+.idea/
+.vscode/
+
+# Docker
+.docker
+docker-compose.override.yml
+
+# Redis
+dump.rdb
+
+# Other
+.DS_Store
+.env.local
+.env.development
+.env.production

@@ -1,0 +1,667 @@
+@font-face {
+    font-family: 'Cairo';
+    src: url('../fonts/Cairo-Regular.ttf') format('truetype');
+}
+
+body {
+    background-color: #f5f5f5;
+    font-family: 'Cairo', sans-serif;
+}
+
+.matches-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.match-card {
+    background: white;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out;
+}
+
+.match-card:hover {
+    transform: translateY(-2px);
+}
+
+.match-header {
+    background-color: #f8f9fa;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+}
+
+.league-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.league-logo {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.channel-info {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.match-content {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.team {
+    flex: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.team-logo {
+    width: 3.5rem;
+    height: 3.5rem;
+    object-fit: contain;
+}
+
+.team-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    text-align: center;
+    margin-top: 0.5rem;
+}
+
+.match-info {
+    flex: 0 0 auto;
+    text-align: center;
+    padding: 0 30px;
+}
+
+.match-time {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+
+.match-time-label {
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+.match-time-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #047857;
+}
+
+.match-status {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.match-status.live {
+    background-color: #fcd34d;
+    color: #92400e;
+}
+
+.match-status.not-started {
+    background-color: #f3f4f6;
+    color: #4b5563;
+}
+
+.match-status.finished {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.match-status.halftime {
+    background-color: #fef9c3;
+    color: #854d0e;
+}
+
+.match-status.extra-time {
+    background-color: #ffedd5;
+    color: #9a3412;
+}
+
+.match-score {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+/* تعديل حجم العناصر للشاشات الصغيرة */
+@media (max-width: 640px) {
+    .team-logo {
+        width: 3rem;
+        height: 3rem;
+    }
+    
+    .team-name {
+        font-size: 0.75rem;
+    }
+    
+    .match-score {
+        font-size: 1.25rem;
+    }
+}
+
+/* تخصيص شريط التمرير */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* تحسين مظهر الفلتر */
+.filter-link {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.filter-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #22c55e;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.filter-link:hover::after,
+.filter-link.active::after {
+    transform: scaleX(1);
+}
+
+/* تحسين مظهر الحالات على الشاشات الصغيرة */
+@media (max-width: 576px) {
+    [data-match-status] {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.75rem;
+    }
+}
+
+/* إضافة في نهاية الملف */
+.animate-ping {
+    animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes ping {
+    75%, 100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+/* تحسين مظهر الروابط النشطة */
+.active-filter {
+    position: relative;
+}
+
+.active-filter::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #22c55e;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.active-filter:hover::after,
+.active-filter.active::after {
+    transform: scaleX(1);
+}
+
+/* تحسين مظهر العداد */
+.matches-count {
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+}
+
+/* أنماط حالة المباراة */
+.match-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.live-indicator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #22c55e;
+    position: relative;
+}
+
+.live-indicator::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #22c55e;
+    animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes ping {
+    75%, 100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+/* حالات المباراة المختلفة */
+.status-live {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.status-not-started {
+    background-color: #f3f4f6;
+    color: #4b5563;
+}
+
+.status-finished {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.status-halftime {
+    background-color: #fef9c3;
+    color: #854d0e;
+}
+
+.status-extra-time {
+    background-color: #ffedd5;
+    color: #9a3412;
+}
+
+/* تحسينات شريط التنقل */
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+@media (max-width: 768px) {
+    .nav-container {
+        padding: 0 0.5rem;
+    }
+}
+
+/* تحسين مظهر القائمة المنسدلة للموبايل */
+.mobile-menu {
+    border-top: 1px solid #e5e7eb;
+    transition: all 0.3s ease-in-out;
+}
+
+.mobile-menu a {
+    transition: all 0.2s ease;
+}
+
+.mobile-menu a:active {
+    background-color: #f3f4f6;
+}
+
+/* تحسين مظهر الأزرار على الموبايل */
+.mobile-menu-button {
+    transition: all 0.2s ease;
+}
+
+.mobile-menu-button:active {
+    background-color: #f3f4f6;
+}
+
+/* تحسين المسافات بين العناصر */
+@media (min-width: 768px) {
+    .nav-links a {
+        margin-right: 1.5rem;
+    }
+    
+    .nav-links a:last-child {
+        margin-right: 0;
+    }
+}
+
+/* تحسين مظهر الشعار والعنوان */
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo-container img {
+    height: 2.5rem;
+    width: auto;
+    object-fit: contain;
+}
+
+.logo-container span {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+/* تحسين تجاوب قسم العنوان والفلتر */
+@media (max-width: 768px) {
+    .matches-header {
+        text-align: center;
+    }
+
+    .matches-header h2 {
+        margin-bottom: 1rem;
+    }
+
+    .filter-buttons {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .filter-buttons a {
+        flex: 0 1 auto;
+        white-space: nowrap;
+        min-width: 120px;
+        text-align: center;
+    }
+}
+
+/* تحسين مظهر الأزرار */
+.filter-button {
+    transition: all 0.2s ease-in-out;
+    font-weight: 500;
+}
+
+.filter-button:hover {
+    transform: translateY(-1px);
+}
+
+.filter-button:active {
+    transform: translateY(0);
+}
+
+/* تحسين المسافات والهوامش */
+@media (min-width: 768px) {
+    .matches-container {
+        padding: 2rem;
+    }
+}
+
+/* تحسين التباعد بين العناصر */
+.gap-y-4 > * + * {
+    margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+    .gap-y-4 > * + * {
+        margin-top: 0;
+    }
+}
+
+/* تحديث الألوان الرئيسية */
+:root {
+    --primary-light: #e8f5e9;
+    --primary: #43a047;
+    --primary-dark: #2e7d32;
+    --primary-hover: #388e3c;
+}
+
+/* أزرار التصفية */
+.filter-date-btn {
+    padding: 0.5rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 9999px;
+    transition: all 0.2s ease;
+    background-color: #f3f4f6;
+    color: #4b5563;
+}
+
+.filter-date-btn:hover {
+    background-color: #e5e7eb;
+    transform: translateY(-1px);
+}
+
+.filter-date-btn.active {
+    background-color: #43a047;
+    color: #ffffff;
+}
+
+/* تحديث أنماط روابط التنقل */
+.nav-link {
+    position: relative;
+    padding: 0.5rem 1rem;
+    color: #4b5563;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+/* إزالة الهوامش السابقة */
+.nav-link:first-child {
+    margin-right: 0;
+}
+
+/* تحسين المسافات بين العناصر */
+@media (min-width: 768px) {
+    .nav-container {
+        display: flex;
+        align-items: center;
+    }
+    
+    /* تحسين المسافة بين الشعار والروابط */
+    .logo-container + .nav-links {
+        margin-right: 2rem;
+    }
+}
+
+/* تحسين مظهر شريط التنقل على الموبايل */
+@media (max-width: 768px) {
+    .mobile-menu {
+        border-top: 1px solid #e5e7eb;
+    }
+    
+    .mobile-menu a {
+        padding: 1rem;
+        display: block;
+        text-align: right;
+        border-bottom: 1px solid #f3f4f6;
+    }
+}
+
+/* إضافة تأثير وميض للوقت في المباريات الجارية */
+@keyframes timeFlash {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.match-time-flash {
+    animation: timeFlash 1s ease-in-out infinite;
+}
+
+/* تحسين مظهر وقت المباراة التي لم تبدأ */
+.match-time {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 600;
+    color: #374151;
+    background-color: #f3f4f6;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.375rem;
+}
+
+/* تحسين مظهر حالة المباراة الجارية */
+.match-status-live {
+    position: relative;
+    overflow: hidden;
+}
+
+.match-status-live::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* تحسين مظهر حالات المباريات */
+.match-status {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.match-status-live {
+    position: relative;
+    overflow: hidden;
+}
+
+.match-time-flash {
+    animation: timeFlash 1s ease-in-out infinite;
+}
+
+@keyframes timeFlash {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* تحسين مظهر بطاقة المباراة عند التحويم */
+.match-card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.match-card:hover {
+    transform: translateY(-2px);
+}
+
+/* تحسين مظهر زر التشغيل */
+.play-button {
+    transition: all 0.3s ease;
+}
+
+.play-button:hover {
+    transform: scale(1.1);
+}
+
+/* تحسين مظهر وقت المباراة */
+.match-time-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.match-time-label {
+    font-size: 0.875rem;
+    color: #6B7280;
+}
+
+.match-time-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #059669;
+}
+
+/* تحسين مظهر حالة المباراة */
+.match-status {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.match-status-live {
+    position: relative;
+    overflow: hidden;
+}
+
+.match-status-finished {
+    background-color: #4B5563;
+    color: white;
+}
+
+/* تأثير التحويم على البطاقة بأكملها */
+.match-card-hover {
+    position: relative;
+    overflow: hidden;
+}
+
+.match-card-hover::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.05);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.match-card-hover:hover::after {
+    opacity: 1;
+} 
